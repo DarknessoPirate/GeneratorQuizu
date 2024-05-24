@@ -51,8 +51,19 @@
                 <TextBox Text="{Binding Answer4Content, UpdateSourceTrigger=PropertyChanged}" Width="220"></TextBox>
                 <CheckBox VerticalAlignment="Center"></CheckBox>
             </StackPanel>
-
-            <Button Height="25" Width ="80" ></Button>
+            <Button Command="{Binding AddQuestionCommand}" Content="Dodaj" Height="25" Width ="80"/>
         </StackPanel>
+
+
+        <DataGrid Grid.Column="1" ItemsSource="{Binding SelectedQuiz.Questions, Mode=TwoWay}" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Pytanie" Binding="{Binding Content}" />
+                <DataGridTextColumn Header="Odp" Binding="{Binding Answer1}" />
+                <DataGridTextColumn Header="Odp" Binding="{Binding Answer2}" />
+                <DataGridTextColumn Header="Odp" Binding="{Binding Answer3}" />
+                <DataGridTextColumn Header="Odp" Binding="{Binding Answer4}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
     </Grid>
 </Window>

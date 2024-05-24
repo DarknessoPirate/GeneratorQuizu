@@ -15,10 +15,13 @@ namespace GeneratorQuizu.ViewModels
     {
         
         private ObservableCollection<Quiz> quizes;
+        
+        
         public MainViewModel()
         {
             quizes = RepozytoriumQuiz.GetAllQuizesFromDb();
-            
+            LoadQuestions();
+                 
         }
 
         public ObservableCollection<Quiz> Quizes
@@ -27,12 +30,18 @@ namespace GeneratorQuizu.ViewModels
             set {  quizes = value; onPropertyChanged(nameof(Quizes)); }
         }
 
+       
+
         private Quiz selectedQuiz;
         public Quiz SelectedQuiz
         {
             get { return selectedQuiz; }
-            set { selectedQuiz = value; onPropertyChanged(nameof(SelectedQuiz)); }
+            set { 
+                selectedQuiz = value; 
+                onPropertyChanged(nameof(SelectedQuiz));
+            }
         }
+
 
         private string name;
 
@@ -41,6 +50,8 @@ namespace GeneratorQuizu.ViewModels
             get { return name; }
             set { name = value; onPropertyChanged(nameof(Name)); }
         }
+
+
 
         private string questionContent;
         public string QuestionContent
@@ -96,7 +107,7 @@ namespace GeneratorQuizu.ViewModels
         {
             if (!string.IsNullOrWhiteSpace(Name))
             {
-                var newQuiz = new Quiz { Name = Name, Questions = new List<Question>() };
+                var newQuiz = new Quiz { Name = Name, Questions = new ObservableCollection<Question>() };
                 if (RepozytoriumQuiz.AddQuizToDb(newQuiz))
                 {
                     Quizes.Add(newQuiz);
@@ -130,6 +141,48 @@ namespace GeneratorQuizu.ViewModels
                 }
             }
         }
+        private ICommand addQuestionCommand;
+        public ICommand AddQuestionCommand
+        {
+            get
+            {
+                if (addQuestionCommand == null)
+                    addQuestionCommand = new RelayCommand(
+                        arg => AddQuestion(),
+                        arg => SelectedQuiz != null
+                        );
+                return addQuestionCommand;
+            }
+        }
+
+        private void AddQuestion()
+        {
+            if (!string.IsNullOrWhiteSpace(QuestionContent))
+            {
+                var newQuestion = new Question { Content=QuestionContent, Answer1=Answer1Content, Answer2=Answer2Content, Answer3=Answer3Content,Answer4=Answer4Content, CorrectAnswers=string.Empty, QuizId=SelectedQuiz.Id };
+                if (RepozytoriumQuestion.AddQuestionToDb(newQuestion))
+                {
+                    
+                    SelectedQuiz.Questions.Add(newQuestion);
+                    onPropertyChanged(nameof(SelectedQuiz));
+                    QuestionContent = string.Empty;
+                    Answer1Content = string.Empty;
+                    Answer2Content = string.Empty;
+                    Answer3Content = string.Empty;
+                    Answer4Content = string.Empty;                
+                    
+                }
+            }
+        }
+
+        private void LoadQuestions()
+        {
+            foreach (var quiz in quizes)
+            {
+                quiz.Questions = RepozytoriumQuestion.GetQuestionsFromDb(quiz.Id);
+            }
+        }
+
         #endregion
 
     }
