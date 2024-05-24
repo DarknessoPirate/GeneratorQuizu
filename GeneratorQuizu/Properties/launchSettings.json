@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "GeneratorQuizu": {
+      "commandName": "Project",
+      "workingDirectory": "."
+    }
+  }
+}

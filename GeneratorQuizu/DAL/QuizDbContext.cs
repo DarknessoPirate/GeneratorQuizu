@@ -1,16 +1,17 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using GeneratorQuizu.DAL.Encje;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GeneratorQuizu.Models
+namespace GeneratorQuizu.DAL
 {
     public class QuizDbContext : DbContext
     {
         public DbSet<Question> Questions { get; set; }
-        public DbSet<Question> Quizes { get; set; }
+        public DbSet<Quiz> Quizes { get; set; }
         public QuizDbContext()
         {
 

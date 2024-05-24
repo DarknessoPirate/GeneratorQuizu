@@ -5,8 +5,54 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GeneratorQuizu"
         mc:Ignorable="d"
+        xmlns:vm="clr-namespace:GeneratorQuizu.ViewModels"
         Title="MainWindow" Height="450" Width="800">
+
     <Grid>
-        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+
+        <StackPanel VerticalAlignment="Center" Margin="10">
+            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"  Height="30" FontSize="18"/>
+            <Button Content="Dodaj" Command="{Binding AddQuizCommand}" Height="30" Margin="0 5 0 5"/>
+            <ComboBox ItemsSource="{Binding Quizes}" SelectedItem="{Binding SelectedQuiz}" DisplayMemberPath="Name" Margin="0 5 0 5"/>
+            <Button Content="Usuń" Command="{Binding DeleteQuizCommand}" Height="30"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                <Label>Pytanie</Label>
+                <TextBox Text="{Binding QuestionContent, UpdateSourceTrigger=PropertyChanged}" Width="220"></TextBox>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                <Label>Odp</Label>
+                <TextBox Text="{Binding Answer1Content, UpdateSourceTrigger=PropertyChanged}" Width="220"></TextBox>
+                <CheckBox VerticalAlignment="Center"></CheckBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                <Label>Odp</Label>
+                <TextBox Text="{Binding Answer2Content, UpdateSourceTrigger=PropertyChanged}" Width="220" ></TextBox>
+                <CheckBox VerticalAlignment="Center"></CheckBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                <Label>Odp</Label>
+                <TextBox Text="{Binding Answer3Content, UpdateSourceTrigger=PropertyChanged}" Width="220"></TextBox>
+                <CheckBox VerticalAlignment="Center"></CheckBox>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
+                <Label>Odp</Label>
+                <TextBox Text="{Binding Answer4Content, UpdateSourceTrigger=PropertyChanged}" Width="220"></TextBox>
+                <CheckBox VerticalAlignment="Center"></CheckBox>
+            </StackPanel>
+
+            <Button Height="25" Width ="80" ></Button>
+        </StackPanel>
     </Grid>
 </Window>

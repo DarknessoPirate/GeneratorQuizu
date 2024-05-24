@@ -5,27 +5,47 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace GeneratorQuizu.ViewModels
+namespace Znajomi.ViewModel.BaseClass
 {
-    public class RelayCommand : ICommand
+    class RelayCommand : ICommand
     {
-        private readonly Action _execute;
-        private readonly Func<bool> _canExecute;
+       
 
-        public RelayCommand(Action execute, Func<bool> canExecute = null)
+        readonly Action<object> _execute;
+        readonly Predicate<object> _canExecute;
+
+
+        public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
-            _execute = execute;
+            if (execute == null)
+                throw new ArgumentNullException(nameof(execute));
+            else
+                _execute = execute;
             _canExecute = canExecute;
         }
-
-        public bool CanExecute(object parameter) => _canExecute?.Invoke() ?? true;
-
-        public void Execute(object parameter) => _execute();
-
-        public event EventHandler CanExecuteChanged
+       
+        public bool CanExecute(object? parameter)
         {
-            add => CommandManager.RequerySuggested += value;
-            remove => CommandManager.RequerySuggested -= value;
+            return _canExecute == null ? true : _canExecute(parameter);
         }
+
+        //zdarzenie informujące o możliwości wykonania polecenie
+        public event EventHandler? CanExecuteChanged
+        {
+            add
+            {
+                if (_canExecute != null) CommandManager.RequerySuggested += value;
+            }
+            remove
+            {
+                if (_canExecute != null) CommandManager.RequerySuggested -= value;
+            }
+        }
+
+        public void Execute(object? parameter)
+        {
+            _execute(parameter);
+        }
+        
     }
 }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GeneratorQuizu.Models
+namespace GeneratorQuizu.DAL.Encje
 {
     public class Question
     {
@@ -16,7 +16,7 @@ namespace GeneratorQuizu.Models
         public string Answer2 { get; set; }
         public string Answer3 { get; set; }
         public string Answer4 { get; set; }
-        public string CorrectAnswers {  get; set; }
-        
+        public string CorrectAnswers { get; set; }
+
     }
 }
