@@ -27,6 +27,23 @@ namespace GeneratorQuizu.DAL.Repozytoria
             return state;
         }
 
+        public static bool DeleteQuestionFromDb(Question question)
+        {
+            bool state = false;
+
+            using (var db = new QuizDbContext())
+            {
+                var questionToRemove = db.Questions.SingleOrDefault(q => q.Id == question.Id);
+                if (questionToRemove != null)
+                {
+                    db.Questions.Remove(questionToRemove);
+                    state = true;
+                    db.SaveChanges();
+                }
+            }
+            return state;
+        }
+
         public static ObservableCollection<Question> GetQuestionsFromDb(int id)
         {
             var qs = new ObservableCollection<Question>();

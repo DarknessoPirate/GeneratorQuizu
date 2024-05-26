@@ -57,5 +57,9 @@ namespace GeneratorQuizu.DAL.Repozytoria
             }
             return list;
         }
+        public static int GetNumberOfQuestionsInDB(Quiz quiz)
+        {
+            return quiz.Questions.Count;
+        }
     }
 }
