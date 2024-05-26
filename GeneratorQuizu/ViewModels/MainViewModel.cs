@@ -21,8 +21,13 @@ namespace GeneratorQuizu.ViewModels
         {
             quizes = RepozytoriumQuiz.GetAllQuizesFromDb();
             LoadQuestions();
-                 
         }
+
+        public bool IsAnswer1Checked { get; set; }
+        public bool IsAnswer2Checked { get; set; }
+        public bool IsAnswer3Checked { get; set; }
+        public bool IsAnswer4Checked { get; set; }
+
 
         public ObservableCollection<Quiz> Quizes
         {
@@ -30,8 +35,8 @@ namespace GeneratorQuizu.ViewModels
             set {  quizes = value; onPropertyChanged(nameof(Quizes)); }
         }
 
-       
 
+        #region properties
         private Quiz selectedQuiz;
         public Quiz SelectedQuiz
         {
@@ -42,16 +47,12 @@ namespace GeneratorQuizu.ViewModels
             }
         }
 
-
         private string name;
-
         public string Name
         {
             get { return name; }
             set { name = value; onPropertyChanged(nameof(Name)); }
         }
-
-
 
         private string questionContent;
         public string QuestionContent
@@ -87,7 +88,7 @@ namespace GeneratorQuizu.ViewModels
             get { return answer4Content; }
             set { answer4Content = value; onPropertyChanged(nameof(Answer4Content)); }
         }
-
+        #endregion
         #region Commands
         private ICommand addQuizCommand;
         public ICommand AddQuizCommand
@@ -149,17 +150,51 @@ namespace GeneratorQuizu.ViewModels
                 if (addQuestionCommand == null)
                     addQuestionCommand = new RelayCommand(
                         arg => AddQuestion(),
-                        arg => SelectedQuiz != null
+                        arg => (SelectedQuiz != null && RepozytoriumQuiz.GetNumberOfQuestionsInDB(SelectedQuiz) <4)
                         );
                 return addQuestionCommand;
             }
         }
 
+        private ICommand playQuizCommand;
+        public ICommand PlayQuizCommand
+        {
+            get
+            {
+                if (playQuizCommand == null)
+                    playQuizCommand = new RelayCommand(
+                        arg => PlayQuiz(),
+                        arg => SelectedQuiz != null
+                    );
+                return playQuizCommand;
+            }
+        }
+
+
+
         private void AddQuestion()
         {
             if (!string.IsNullOrWhiteSpace(QuestionContent))
             {
-                var newQuestion = new Question { Content=QuestionContent, Answer1=Answer1Content, Answer2=Answer2Content, Answer3=Answer3Content,Answer4=Answer4Content, CorrectAnswers=string.Empty, QuizId=SelectedQuiz.Id };
+
+                var correctAnswers = new List<int>();
+                if (IsAnswer1Checked) correctAnswers.Add(1);
+                if (IsAnswer2Checked) correctAnswers.Add(2);
+                if (IsAnswer3Checked) correctAnswers.Add(3);
+                if (IsAnswer4Checked) correctAnswers.Add(4);
+
+
+                var newQuestion = new Question 
+                { 
+                    Content=QuestionContent, 
+                    Answer1=Answer1Content, 
+                    Answer2=Answer2Content,
+                    Answer3=Answer3Content,
+                    Answer4=Answer4Content, CorrectAnswers= string.Join(',',correctAnswers),
+                    QuizId=SelectedQuiz.Id
+                };
+
+
                 if (RepozytoriumQuestion.AddQuestionToDb(newQuestion))
                 {
                     
@@ -169,8 +204,8 @@ namespace GeneratorQuizu.ViewModels
                     Answer1Content = string.Empty;
                     Answer2Content = string.Empty;
                     Answer3Content = string.Empty;
-                    Answer4Content = string.Empty;                
-                    
+                    Answer4Content = string.Empty;
+                    ResetCheckBoxes();
                 }
             }
         }
@@ -182,7 +217,23 @@ namespace GeneratorQuizu.ViewModels
                 quiz.Questions = RepozytoriumQuestion.GetQuestionsFromDb(quiz.Id);
             }
         }
+        private void PlayQuiz()
+        {
+            var playQuizWindow = new PlayGameWindow(SelectedQuiz);
+            playQuizWindow.Show();
+        }
 
+        private void ResetCheckBoxes()
+        {
+            IsAnswer1Checked = false;
+            IsAnswer2Checked = false;
+            IsAnswer3Checked = false;
+            IsAnswer4Checked = false;
+            onPropertyChanged(nameof(IsAnswer1Checked));
+            onPropertyChanged(nameof(IsAnswer2Checked));
+            onPropertyChanged(nameof(IsAnswer3Checked));
+            onPropertyChanged(nameof(IsAnswer4Checked));
+        }
         #endregion
 
     }

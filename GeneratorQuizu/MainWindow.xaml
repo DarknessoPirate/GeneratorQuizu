@@ -6,26 +6,34 @@
         xmlns:local="clr-namespace:GeneratorQuizu"
         mc:Ignorable="d"
         xmlns:vm="clr-namespace:GeneratorQuizu.ViewModels"
-        Title="MainWindow" Height="450" Width="800">
-
+        Title="MainWindow" Height="550" Width="800">
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
             <RowDefinition/>
         </Grid.RowDefinitions>
+        
 
+        <Label Content="Dodaj Quiz" FontSize="15" Grid.Row="1"></Label>
+        <Label Content="Dodaj Pytanie do wybranego quizu" Grid.Row="2" FontSize="15"></Label>
+        <Button Content="Play" Command="{Binding PlayQuizCommand}" Height="30" Margin="0 5 0 5" Grid.Row="2" Grid.Column="2"/>
 
-        <StackPanel VerticalAlignment="Center" Margin="10">
+        <StackPanel VerticalAlignment="Center" Margin="10" Grid.Row="1">
+            <Label Content="Nazwa Quizu"/>
             <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"  Height="30" FontSize="18"/>
             <Button Content="Dodaj" Command="{Binding AddQuizCommand}" Height="30" Margin="0 5 0 5"/>
             <ComboBox ItemsSource="{Binding Quizes}" SelectedItem="{Binding SelectedQuiz}" DisplayMemberPath="Name" Margin="0 5 0 5"/>
             <Button Content="Usuń" Command="{Binding DeleteQuizCommand}" Height="30"/>
         </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+        <StackPanel Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,52,0,0">
+
             <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
                 <Label>Pytanie</Label>
                 <TextBox Text="{Binding QuestionContent, UpdateSourceTrigger=PropertyChanged}" Width="220"></TextBox>
@@ -34,28 +42,33 @@
             <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
                 <Label>Odp</Label>
                 <TextBox Text="{Binding Answer1Content, UpdateSourceTrigger=PropertyChanged}" Width="220"></TextBox>
-                <CheckBox VerticalAlignment="Center"></CheckBox>
+                <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsAnswer1Checked}"></CheckBox>
             </StackPanel>
+
             <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
                 <Label>Odp</Label>
                 <TextBox Text="{Binding Answer2Content, UpdateSourceTrigger=PropertyChanged}" Width="220" ></TextBox>
-                <CheckBox VerticalAlignment="Center"></CheckBox>
+                <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsAnswer2Checked}"></CheckBox>
             </StackPanel>
+
             <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
                 <Label>Odp</Label>
                 <TextBox Text="{Binding Answer3Content, UpdateSourceTrigger=PropertyChanged}" Width="220"></TextBox>
-                <CheckBox VerticalAlignment="Center"></CheckBox>
+                <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsAnswer3Checked}"></CheckBox>
             </StackPanel>
+
             <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
                 <Label>Odp</Label>
                 <TextBox Text="{Binding Answer4Content, UpdateSourceTrigger=PropertyChanged}" Width="220"></TextBox>
-                <CheckBox VerticalAlignment="Center"></CheckBox>
+                <CheckBox VerticalAlignment="Center" IsChecked="{Binding IsAnswer4Checked}"></CheckBox>
             </StackPanel>
+
             <Button Command="{Binding AddQuestionCommand}" Content="Dodaj" Height="25" Width ="80"/>
+
         </StackPanel>
 
 
-        <DataGrid Grid.Column="1" ItemsSource="{Binding SelectedQuiz.Questions, Mode=TwoWay}" AutoGenerateColumns="False">
+        <DataGrid Grid.Column="1" Grid.Row="1" ItemsSource="{Binding SelectedQuiz.Questions, Mode=TwoWay}" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Pytanie" Binding="{Binding Content}" />
                 <DataGridTextColumn Header="Odp" Binding="{Binding Answer1}" />
@@ -66,4 +79,6 @@
         </DataGrid>
 
     </Grid>
+    
+    
 </Window>
