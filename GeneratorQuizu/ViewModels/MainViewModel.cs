@@ -134,7 +134,7 @@ namespace GeneratorQuizu.ViewModels
                 if (addQuestionCommand == null)
                     addQuestionCommand = new RelayCommand(
                         arg => AddQuestion(),
-                        arg => (SelectedQuiz != null && RepozytoriumQuiz.GetNumberOfQuestionsInDB(SelectedQuiz) <4 &&
+                        arg => (SelectedQuiz != null && RepozytoriumQuiz.GetNumberOfQuestionsInDB(SelectedQuiz) < 4 &&
                                 Answer1Content != string.Empty &&
                                 Answer2Content != string.Empty &&
                                 Answer3Content != string.Empty &&
@@ -142,6 +142,25 @@ namespace GeneratorQuizu.ViewModels
                                 (IsAnswer1Checked || IsAnswer2Checked || IsAnswer3Checked || IsAnswer4Checked))
                         );
                 return addQuestionCommand;
+            }
+        }
+
+        private ICommand modifyQuestionCommand;
+        public ICommand ModifyQuestionCommand
+        {
+            get
+            {
+                if (modifyQuestionCommand == null)
+                    modifyQuestionCommand = new RelayCommand(
+                        arg => ModifyQuestion(),
+                        arg => (SelectedQuiz != null && SelectedQuestion != null &&
+                                Answer1Content != string.Empty &&
+                                Answer2Content != string.Empty &&
+                                Answer3Content != string.Empty &&
+                                Answer4Content != string.Empty &&
+                                (IsAnswer1Checked || IsAnswer2Checked || IsAnswer3Checked || IsAnswer4Checked))
+                        );
+                return modifyQuestionCommand;
             }
         }
 
@@ -204,7 +223,46 @@ namespace GeneratorQuizu.ViewModels
                 {
                     
                     SelectedQuiz.Questions.Add(newQuestion);
-                    onPropertyChanged(nameof(SelectedQuiz));
+                    QuestionContent = string.Empty;
+                    Answer1Content = string.Empty;
+                    Answer2Content = string.Empty;
+                    Answer3Content = string.Empty;
+                    Answer4Content = string.Empty;
+                    ResetCheckBoxes();
+                }
+            }
+        }
+
+        private void ModifyQuestion()
+        {
+            if (!string.IsNullOrWhiteSpace(QuestionContent))
+            {
+
+                var correctAnswers = new List<int>();
+                if (IsAnswer1Checked) correctAnswers.Add(1);
+                if (IsAnswer2Checked) correctAnswers.Add(2);
+                if (IsAnswer3Checked) correctAnswers.Add(3);
+                if (IsAnswer4Checked) correctAnswers.Add(4);
+
+
+                var newQuestion = new Question
+                {
+                    Content = QuestionContent,
+                    Answer1 = Answer1Content,
+                    Answer2 = Answer2Content,
+                    Answer3 = Answer3Content,
+                    Answer4 = Answer4Content,
+                    CorrectAnswers = string.Join(',', correctAnswers),
+                    QuizId = SelectedQuiz.Id
+                };
+
+
+                if (RepozytoriumQuestion.ModifyQuestionInDb(newQuestion, selectedQuestion.Id))
+                {
+                    int index = SelectedQuiz.Questions.IndexOf(selectedQuestion);
+
+                    SelectedQuiz.Questions[index] = newQuestion;
+
                     QuestionContent = string.Empty;
                     Answer1Content = string.Empty;
                     Answer2Content = string.Empty;

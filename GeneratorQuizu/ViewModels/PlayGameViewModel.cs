@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using Znajomi.ViewModel.BaseClass;
 
 namespace GeneratorQuizu.ViewModels
@@ -15,7 +17,8 @@ namespace GeneratorQuizu.ViewModels
     {
         private ObservableCollection<Question> questions;
         private int currentQuestionIndex;
-        
+        private Stopwatch stopwatch;
+        private DispatcherTimer timer;
 
         public PlayGameViewModel(Quiz quiz)
         {
@@ -23,7 +26,19 @@ namespace GeneratorQuizu.ViewModels
             CurrentQuestion = Questions[0];
             currentQuestionIndex = 0;
             score = 0;
-            buttonContent = "Next";
+            buttonContent = currentQuestionIndex == Questions.Count - 1 ? "Finish Quiz" : "Next";
+            stopwatch = new Stopwatch();
+            timer = new DispatcherTimer();
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Tick += Timer_Tick;
+            QuizTime = "00:00:00";
+        }
+
+        private string quizTime;
+        public string QuizTime
+        {
+            get { return quizTime; }
+            set {quizTime = value; onPropertyChanged(nameof(QuizTime)); }
         }
 
         public bool IsAnswer1Checked { get; set; }
@@ -58,6 +73,35 @@ namespace GeneratorQuizu.ViewModels
             set { currentQuestion = value; onPropertyChanged(nameof(CurrentQuestion)); }
         }
 
+        private ICommand startTimeCommand;
+        public ICommand StartTimeCommand
+        {
+            get
+            {
+                if (startTimeCommand == null)
+                    startTimeCommand = new RelayCommand(
+                        arg => StartTime(),
+                        arg => true
+                        );
+                return startTimeCommand;
+            }
+        }
+
+        private ICommand stopTimeCommand;
+        public ICommand StopTimeCommand
+        {
+            get
+            {
+                if (stopTimeCommand == null)
+                    stopTimeCommand = new RelayCommand(
+                        arg => EndTime(),
+                        arg => true
+                        );
+                return stopTimeCommand;
+            }
+        }
+
+
         private ICommand nextQuestionCommand;
         public ICommand NextQuestionCommand
         {
@@ -78,6 +122,25 @@ namespace GeneratorQuizu.ViewModels
         protected void OnRequestClose()
         {
             RequestClose?.Invoke(this, EventArgs.Empty);
+        }
+
+        private void StartTime()
+        {
+            stopwatch.Start();
+            timer.Start();
+        }
+
+        private void EndTime()
+        {
+            stopwatch.Stop();
+            timer.Stop();
+            QuizTime = stopwatch.Elapsed.ToString(@"hh\:mm\:ss");
+
+        }
+
+        private void Timer_Tick(object sender, EventArgs e)
+        {
+            QuizTime = stopwatch.Elapsed.ToString(@"hh\:mm\:ss");
         }
 
         private void NextQuestion()
@@ -119,7 +182,15 @@ namespace GeneratorQuizu.ViewModels
             score += intersection;
            
             onPropertyChanged(nameof(Score));
-            MessageBox.Show($"Curent score: {score}");
+            if (currentQuestionIndex != Questions.Count - 1)
+            {
+                MessageBox.Show($"Curent score: {score}");
+            }
+            else
+            {
+                MessageBox.Show($"Final score: {score}\nElapsed time: {QuizTime}");
+            }
+            
         }
 
         private void ResetCheckBoxes()

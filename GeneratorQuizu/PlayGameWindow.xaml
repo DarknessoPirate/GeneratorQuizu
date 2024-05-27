@@ -5,23 +5,36 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:GeneratorQuizu"
         mc:Ignorable="d"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         Title="PlayGameWindow" Height="450" Width="800">
+
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding StartTimeCommand}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Closed">
+            <i:InvokeCommandAction Command="{Binding StopTimeCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+
     <Grid>
         <StackPanel>
-            <TextBlock Text="{Binding CurrentQuestion.Content}" FontSize="16" Margin="10"/>
+            <TextBlock Text="{Binding QuizTime}" FontSize="24" Margin="15"/>
+            <TextBlock Text="{Binding CurrentQuestion.Content}" FontSize="20" Margin="10"/>
             <StackPanel Orientation="Horizontal" Margin="10">
-                <CheckBox Content="{Binding CurrentQuestion.Answer1}" IsChecked="{Binding IsAnswer1Checked}" Margin="5"/>
+                <CheckBox Content="{Binding CurrentQuestion.Answer1}" FontSize="18" IsChecked="{Binding IsAnswer1Checked}" Margin="5"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="10">
-                <CheckBox Content="{Binding CurrentQuestion.Answer2}" IsChecked="{Binding IsAnswer2Checked}" Margin="5"/>
+                <CheckBox Content="{Binding CurrentQuestion.Answer2}" FontSize="18" IsChecked="{Binding IsAnswer2Checked}" Margin="5"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="10">
-                <CheckBox Content="{Binding CurrentQuestion.Answer3}" IsChecked="{Binding IsAnswer3Checked}" Margin="5"/>
+                <CheckBox Content="{Binding CurrentQuestion.Answer3}" FontSize="18" IsChecked="{Binding IsAnswer3Checked}" Margin="5"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="10">
-                <CheckBox Content="{Binding CurrentQuestion.Answer4}" IsChecked="{Binding IsAnswer4Checked}" Margin="5"/>
+                <CheckBox Content="{Binding CurrentQuestion.Answer4}" FontSize="18" IsChecked="{Binding IsAnswer4Checked}" Margin="5"/>
             </StackPanel>
-            <Button Content="{Binding ButtonContent}" Command="{Binding NextQuestionCommand}" Margin="10"/>
+            <Button Content="{Binding ButtonContent}" Command="{Binding NextQuestionCommand}" Margin="10" Width="500" Height="40" FontSize="24"/>
         </StackPanel>
     </Grid>
 </Window>
