@@ -1,4 +1,5 @@
 ﻿using GeneratorQuizu.DAL.Encje;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,7 +11,7 @@ namespace GeneratorQuizu.DAL.Repozytoria
 {
     public static class RepozytoriumQuiz
     {
-        public static bool AddQuizToDb(Quiz quiz)
+        public static async Task<bool> AddQuizToDb(Quiz quiz)
         {
             bool state = false;
 
@@ -18,26 +19,26 @@ namespace GeneratorQuizu.DAL.Repozytoria
             {
                 if (quiz != null)
                 {
-                    db.Quizes.Add(quiz);
+                    await db.Quizes.AddAsync(quiz);
                     state = true;
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                 }
             }
             return state;
         }
 
-        public static bool DeleteQuizFromDb(Quiz quiz)
+        public static async Task<bool> DeleteQuizFromDb(Quiz quiz)
         {
             bool state = false;
 
             using (var db = new QuizDbContext())
             {
-                var quizToRemove = db.Quizes.SingleOrDefault(q => q.Id == quiz.Id);
+                var quizToRemove = await db.Quizes.SingleOrDefaultAsync(q => q.Id == quiz.Id);
                 if (quizToRemove != null)
                 {
                     db.Quizes.Remove(quizToRemove);
                     state = true;
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                 }
             }
             return state;

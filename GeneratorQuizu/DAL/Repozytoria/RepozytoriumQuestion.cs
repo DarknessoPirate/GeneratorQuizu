@@ -1,4 +1,5 @@
 ﻿using GeneratorQuizu.DAL.Encje;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace GeneratorQuizu.DAL.Repozytoria
 {
     public static class RepozytoriumQuestion
     {
-        public static bool AddQuestionToDb(Question question)
+        public static async Task<bool> AddQuestionToDb(Question question)
         {
             bool state = false;
 
@@ -19,37 +20,37 @@ namespace GeneratorQuizu.DAL.Repozytoria
             {
                 if (question != null)
                 {
-                    db.Questions.Add(question);
+                    await db.Questions.AddAsync(question);
                     state = true;
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                 }
             }
             return state;
         }
 
-        public static bool DeleteQuestionFromDb(Question question)
+        public static async Task<bool> DeleteQuestionFromDb(Question question)
         {
             bool state = false;
 
             using (var db = new QuizDbContext())
             {
-                var questionToRemove = db.Questions.SingleOrDefault(q => q.Id == question.Id);
+                var questionToRemove = await db.Questions.SingleOrDefaultAsync(q => q.Id == question.Id);
                 if (questionToRemove != null)
                 {
                     db.Questions.Remove(questionToRemove);
                     state = true;
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                 }
             }
             return state;
         }
 
-        public static bool ModifyQuestionInDb(Question question, int questionIdToModify)
+        public static async Task<bool> ModifyQuestionInDb(Question question, int questionIdToModify)
         {
             bool state = false;
             using (var db = new QuizDbContext())
             {
-                var questionToModify = db.Questions.SingleOrDefault(q => q.Id == questionIdToModify);
+                var questionToModify = await db.Questions.SingleOrDefaultAsync(q => q.Id == questionIdToModify);
                 if (questionToModify != null)
                 {
                     questionToModify.Content = question.Content;
@@ -59,7 +60,7 @@ namespace GeneratorQuizu.DAL.Repozytoria
                     questionToModify.Answer4 = question.Answer4;
                     questionToModify.CorrectAnswers = question.CorrectAnswers;
                     state = true;
-                    db.SaveChanges();
+                    await db.SaveChangesAsync();
                 }
             }
             return state;
@@ -70,7 +71,7 @@ namespace GeneratorQuizu.DAL.Repozytoria
             var qs = new ObservableCollection<Question>();
             using (var db = new QuizDbContext())
             {
-                var questions =  db.Questions.Where(x => x.QuizId == id).ToList();
+                var questions = db.Questions.Where(x => x.QuizId == id).ToList();
                 foreach (var question in questions)
                 {
                     qs.Add(question);

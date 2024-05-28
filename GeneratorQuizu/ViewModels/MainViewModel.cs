@@ -196,7 +196,7 @@ namespace GeneratorQuizu.ViewModels
 
 
 
-        private void AddQuestion()
+        private async Task AddQuestion()
         {
             if (!string.IsNullOrWhiteSpace(QuestionContent))
             {
@@ -219,7 +219,7 @@ namespace GeneratorQuizu.ViewModels
                 };
 
 
-                if (RepozytoriumQuestion.AddQuestionToDb(newQuestion))
+                if (await RepozytoriumQuestion.AddQuestionToDb(newQuestion))
                 {
                     
                     SelectedQuiz.Questions.Add(newQuestion);
@@ -233,7 +233,7 @@ namespace GeneratorQuizu.ViewModels
             }
         }
 
-        private void ModifyQuestion()
+        private async Task ModifyQuestion()
         {
             if (!string.IsNullOrWhiteSpace(QuestionContent))
             {
@@ -257,7 +257,7 @@ namespace GeneratorQuizu.ViewModels
                 };
 
 
-                if (RepozytoriumQuestion.ModifyQuestionInDb(newQuestion, selectedQuestion.Id))
+                if (await RepozytoriumQuestion.ModifyQuestionInDb(newQuestion, selectedQuestion.Id))
                 {
                     int index = SelectedQuiz.Questions.IndexOf(selectedQuestion);
 
@@ -273,11 +273,11 @@ namespace GeneratorQuizu.ViewModels
             }
         }
 
-        private void DeleteQuestion()
+        private async Task DeleteQuestion()
         {
             if (SelectedQuestion != null)
             {
-                if (RepozytoriumQuestion.DeleteQuestionFromDb(SelectedQuestion))
+                if (await RepozytoriumQuestion.DeleteQuestionFromDb(SelectedQuestion))
                 {
                     SelectedQuiz.Questions.Remove(SelectedQuestion);
                     SelectedQuestion = null;
@@ -285,12 +285,12 @@ namespace GeneratorQuizu.ViewModels
             }
         }
 
-        private void AddQuiz()
+        private async Task AddQuiz()
         {
             if (!string.IsNullOrWhiteSpace(Name))
             {
                 var newQuiz = new Quiz { Name = Name, Questions = new ObservableCollection<Question>() };
-                if (RepozytoriumQuiz.AddQuizToDb(newQuiz))
+                if (await RepozytoriumQuiz.AddQuizToDb(newQuiz))
                 {
                     Quizes.Add(newQuiz);
                     Name = string.Empty;
@@ -298,11 +298,11 @@ namespace GeneratorQuizu.ViewModels
             }
         }
 
-        private void DeleteQuiz()
+        private async Task DeleteQuiz()
         {
             if (SelectedQuiz != null)
             {
-                if (RepozytoriumQuiz.DeleteQuizFromDb(SelectedQuiz))
+                if (await RepozytoriumQuiz.DeleteQuizFromDb(SelectedQuiz))
                 {
                     Quizes.Remove(SelectedQuiz);
                     SelectedQuiz = null;
