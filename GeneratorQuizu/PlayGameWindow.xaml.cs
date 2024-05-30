@@ -27,7 +27,7 @@ namespace GeneratorQuizu
             InitializeComponent();
             var viewmodel = new PlayGameViewModel(selectedQuiz);
             DataContext = viewmodel;
-            viewmodel.RequestClose += (s, e) => this.Close();
+            viewmodel.RequestClose += (s, e) => Close();
 
         }
     }

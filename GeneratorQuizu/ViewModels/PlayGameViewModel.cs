@@ -101,7 +101,6 @@ namespace GeneratorQuizu.ViewModels
             }
         }
 
-
         private ICommand nextQuestionCommand;
         public ICommand NextQuestionCommand
         {
