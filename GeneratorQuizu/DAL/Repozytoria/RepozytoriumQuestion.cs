@@ -1,4 +1,5 @@
 ﻿using GeneratorQuizu.DAL.Encje;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using System;
 using System.Collections.Generic;
@@ -70,7 +71,7 @@ namespace GeneratorQuizu.DAL.Repozytoria
             var qs = new ObservableCollection<Question>();
             using (var db = new QuizDbContext())
             {
-                var questions =  db.Questions.Where(x => x.QuizId == id).ToList();
+                var questions = db.Questions.Where(x => x.QuizId == id).ToList();
                 foreach (var question in questions)
                 {
                     qs.Add(question);
