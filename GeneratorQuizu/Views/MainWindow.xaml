@@ -3,14 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:GeneratorQuizu"
         mc:Ignorable="d"
-        xmlns:vm="clr-namespace:GeneratorQuizu.ViewModels"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         Title="MainWindow" Height="550" Width="800">
 
     <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Selected">
+        <i:EventTrigger EventName="SelectedCellsChanged">
             <i:InvokeCommandAction Command="{Binding SelectCell}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
@@ -41,7 +39,7 @@
                 <Button Content="Play" Command="{Binding PlayQuizCommand}" FontSize="18" Margin="0 5 0 0"  Height="30"/>
             </StackPanel>
 
-            <StackPanel Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0 30 0 0">
+            <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="0 30 0 0">
 
                 <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
                     <Label>Pytanie</Label>
@@ -85,6 +83,7 @@
 
 
         <DataGrid Grid.Row="1" ColumnWidth="*" ItemsSource="{Binding SelectedQuiz.Questions, Mode=TwoWay}" SelectedItem="{Binding SelectedQuestion}"
+                  IsReadOnly="True"
                   CanUserAddRows="False"
                   AutoGenerateColumns="False"
                   CanUserDeleteRows="False"
@@ -92,7 +91,7 @@
                   CanUserResizeRows="False"
                   CanUserSortColumns="False">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Pytanie" Binding="{Binding Content}" />
+                <DataGridTextColumn Header="Pytanie" Binding="{Binding Content}"/>
                 <DataGridTextColumn Header="Odp" Binding="{Binding Answer1}" />
                 <DataGridTextColumn Header="Odp" Binding="{Binding Answer2}" />
                 <DataGridTextColumn Header="Odp" Binding="{Binding Answer3}" />

@@ -1,12 +1,5 @@
 ﻿using GeneratorQuizu.DAL.Encje;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Migrations.Operations;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GeneratorQuizu.DAL.Repozytoria
 {
@@ -61,6 +54,7 @@ namespace GeneratorQuizu.DAL.Repozytoria
                     questionToModify.CorrectAnswers = question.CorrectAnswers;
                     state = true;
                     db.SaveChanges();
+                    
                 }
             }
             return state;

@@ -1,11 +1,6 @@
 ﻿using GeneratorQuizu.DAL.Encje;
 using GeneratorQuizu.DAL.Repozytoria;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Znajomi.ViewModel.BaseClass;
 
@@ -13,10 +8,10 @@ namespace GeneratorQuizu.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {
-        
+
         private ObservableCollection<Quiz> quizes;
-        
-        
+
+
         public MainViewModel()
         {
             quizes = RepozytoriumQuiz.GetAllQuizesFromDb();
@@ -32,7 +27,7 @@ namespace GeneratorQuizu.ViewModels
         public ObservableCollection<Quiz> Quizes
         {
             get { return quizes; }
-            set {  quizes = value; onPropertyChanged(nameof(Quizes)); }
+            set { quizes = value; onPropertyChanged(nameof(Quizes)); }
         }
 
 
@@ -41,8 +36,8 @@ namespace GeneratorQuizu.ViewModels
         public Quiz SelectedQuiz
         {
             get { return selectedQuiz; }
-            set { 
-                selectedQuiz = value; 
+            set {
+                selectedQuiz = value;
                 onPropertyChanged(nameof(SelectedQuiz));
             }
         }
@@ -58,14 +53,17 @@ namespace GeneratorQuizu.ViewModels
         public Question SelectedQuestion
         {
             get { return selectedQuestion; }
-            set { selectedQuestion = value; onPropertyChanged(nameof(SelectedQuestion)); }
+            set { selectedQuestion = value;
+                ResetCheckBoxes();
+                InitializeCellsWithData();
+                onPropertyChanged(nameof(SelectedQuestion)); }
         }
 
         private string questionContent;
         public string QuestionContent
         {
             get { return questionContent; }
-            set { questionContent = value; onPropertyChanged( nameof(QuestionContent)); }
+            set { questionContent = value; onPropertyChanged(nameof(QuestionContent)); }
         }
 
         private string answer1Content = string.Empty;
@@ -102,7 +100,7 @@ namespace GeneratorQuizu.ViewModels
         {
             get
             {
-                if(addQuizCommand == null)
+                if (addQuizCommand == null)
                     addQuizCommand = new RelayCommand(
                         arg => AddQuiz(),
                         arg => !string.IsNullOrEmpty(name)
@@ -125,7 +123,7 @@ namespace GeneratorQuizu.ViewModels
             }
         }
 
-       
+
         private ICommand addQuestionCommand;
         public ICommand AddQuestionCommand
         {
@@ -178,7 +176,7 @@ namespace GeneratorQuizu.ViewModels
             }
         }
 
-        
+
 
         private ICommand playQuizCommand;
         public ICommand PlayQuizCommand
@@ -202,7 +200,7 @@ namespace GeneratorQuizu.ViewModels
                 if (selectCell == null)
                     selectCell = new RelayCommand(
                         arg => InitializeCellsWithData(),
-                        arg => true
+                        arg => SelectedQuestion != null
                         );
                 return selectCell;
             }
@@ -210,18 +208,30 @@ namespace GeneratorQuizu.ViewModels
 
         private void InitializeCellsWithData()
         {
-            var correctAnswersIndexes = SelectedQuestion.GetCorrectAnswerIndexes();
+            if (SelectedQuestion != null)
+            {
+                var correctAnswersIndexes = SelectedQuestion.GetCorrectAnswerIndexes();
 
-            QuestionContent = SelectedQuestion.Content;
-            Answer1Content = SelectedQuestion.Answer1;
-            Answer2Content = SelectedQuestion.Answer2;
-            Answer3Content = SelectedQuestion.Answer3;
-            Answer4Content = SelectedQuestion.Answer4;
+                QuestionContent = SelectedQuestion.Content;
+                Answer1Content = SelectedQuestion.Answer1;
+                Answer2Content = SelectedQuestion.Answer2;
+                Answer3Content = SelectedQuestion.Answer3;
+                Answer4Content = SelectedQuestion.Answer4;
 
-            if (correctAnswersIndexes.Contains(1)) IsAnswer1Checked = true;
-            if (correctAnswersIndexes.Contains(2)) IsAnswer2Checked = true;
-            if (correctAnswersIndexes.Contains(3)) IsAnswer3Checked = true;
-            if (correctAnswersIndexes.Contains(4)) IsAnswer4Checked = true;
+                if (correctAnswersIndexes.Contains(1)) IsAnswer1Checked = true;
+                if (correctAnswersIndexes.Contains(2)) IsAnswer2Checked = true;
+                if (correctAnswersIndexes.Contains(3)) IsAnswer3Checked = true;
+                if (correctAnswersIndexes.Contains(4)) IsAnswer4Checked = true;
+
+                onPropertyChanged(nameof(IsAnswer1Checked));
+                onPropertyChanged(nameof(IsAnswer2Checked));
+                onPropertyChanged(nameof(IsAnswer3Checked));
+                onPropertyChanged(nameof(IsAnswer4Checked));
+            }
+            else
+            {
+                ResetTextBoxes();
+            }
 
         }
 
@@ -237,26 +247,22 @@ namespace GeneratorQuizu.ViewModels
                 if (IsAnswer4Checked) correctAnswers.Add(4);
 
 
-                var newQuestion = new Question 
-                { 
-                    Content=QuestionContent, 
-                    Answer1=Answer1Content, 
-                    Answer2=Answer2Content,
-                    Answer3=Answer3Content,
-                    Answer4=Answer4Content, CorrectAnswers= string.Join(',',correctAnswers),
-                    QuizId=SelectedQuiz.Id
+                var newQuestion = new Question
+                {
+                    Content = QuestionContent,
+                    Answer1 = Answer1Content,
+                    Answer2 = Answer2Content,
+                    Answer3 = Answer3Content,
+                    Answer4 = Answer4Content, CorrectAnswers = string.Join(',', correctAnswers),
+                    QuizId = SelectedQuiz.Id
                 };
 
 
                 if (RepozytoriumQuestion.AddQuestionToDb(newQuestion))
                 {
-                    
+
                     SelectedQuiz.Questions.Add(newQuestion);
-                    QuestionContent = string.Empty;
-                    Answer1Content = string.Empty;
-                    Answer2Content = string.Empty;
-                    Answer3Content = string.Empty;
-                    Answer4Content = string.Empty;
+                    ResetTextBoxes();
                     ResetCheckBoxes();
                 }
             }
@@ -276,6 +282,7 @@ namespace GeneratorQuizu.ViewModels
 
                 var newQuestion = new Question
                 {
+                    Id = SelectedQuestion.Id,
                     Content = QuestionContent,
                     Answer1 = Answer1Content,
                     Answer2 = Answer2Content,
@@ -292,11 +299,7 @@ namespace GeneratorQuizu.ViewModels
 
                     SelectedQuiz.Questions[index] = newQuestion;
 
-                    QuestionContent = string.Empty;
-                    Answer1Content = string.Empty;
-                    Answer2Content = string.Empty;
-                    Answer3Content = string.Empty;
-                    Answer4Content = string.Empty;
+                    ResetTextBoxes();
                     ResetCheckBoxes();
                 }
             }
@@ -362,6 +365,15 @@ namespace GeneratorQuizu.ViewModels
             onPropertyChanged(nameof(IsAnswer2Checked));
             onPropertyChanged(nameof(IsAnswer3Checked));
             onPropertyChanged(nameof(IsAnswer4Checked));
+        }
+
+        private void ResetTextBoxes()
+        {
+            QuestionContent = string.Empty;
+            Answer1Content = string.Empty;
+            Answer2Content = string.Empty;
+            Answer3Content = string.Empty;
+            Answer4Content = string.Empty;
         }
         #endregion
 

@@ -1,11 +1,6 @@
 ﻿using GeneratorQuizu.DAL.Encje;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -177,8 +172,11 @@ namespace GeneratorQuizu.ViewModels
             if (IsAnswer3Checked) userAnswers.Add(3);
             if (IsAnswer4Checked) userAnswers.Add(4);
 
-            var intersection = userAnswers.Intersect(correctAnswers).Count();
-            score += intersection;
+            int correctAnswersCount = userAnswers.Intersect(correctAnswers).Count();
+            bool isCorrect = userAnswers.SequenceEqual(correctAnswers);
+
+            score += isCorrect ? correctAnswersCount : 0;
+            
            
             onPropertyChanged(nameof(Score));
             if (currentQuestionIndex != Questions.Count - 1)

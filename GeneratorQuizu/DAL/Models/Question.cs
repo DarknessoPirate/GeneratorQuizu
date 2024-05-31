@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GeneratorQuizu.DAL.Encje
+﻿namespace GeneratorQuizu.DAL.Encje
 {
     public class Question
     {

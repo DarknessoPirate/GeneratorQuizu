@@ -1,11 +1,5 @@
 ﻿using GeneratorQuizu.DAL.Encje;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GeneratorQuizu.DAL.Repozytoria
 {
@@ -19,7 +13,7 @@ namespace GeneratorQuizu.DAL.Repozytoria
             {
                 if (quiz != null)
                 {
-                    db.Quizes.SingleOrDefault(quiz);
+                    db.Quizes.Add(quiz);
                     state = true;
                     db.SaveChanges();
                 }
