@@ -194,7 +194,36 @@ namespace GeneratorQuizu.ViewModels
             }
         }
 
+        private ICommand selectCell;
+        public ICommand SelectCell
+        {
+            get
+            {
+                if (selectCell == null)
+                    selectCell = new RelayCommand(
+                        arg => InitializeCellsWithData(),
+                        arg => true
+                        );
+                return selectCell;
+            }
+        }
 
+        private void InitializeCellsWithData()
+        {
+            var correctAnswersIndexes = SelectedQuestion.GetCorrectAnswerIndexes();
+
+            QuestionContent = SelectedQuestion.Content;
+            Answer1Content = SelectedQuestion.Answer1;
+            Answer2Content = SelectedQuestion.Answer2;
+            Answer3Content = SelectedQuestion.Answer3;
+            Answer4Content = SelectedQuestion.Answer4;
+
+            if (correctAnswersIndexes.Contains(1)) IsAnswer1Checked = true;
+            if (correctAnswersIndexes.Contains(2)) IsAnswer2Checked = true;
+            if (correctAnswersIndexes.Contains(3)) IsAnswer3Checked = true;
+            if (correctAnswersIndexes.Contains(4)) IsAnswer4Checked = true;
+
+        }
 
         private void AddQuestion()
         {
