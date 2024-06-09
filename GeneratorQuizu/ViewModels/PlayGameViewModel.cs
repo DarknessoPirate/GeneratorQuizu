@@ -21,7 +21,7 @@ namespace GeneratorQuizu.ViewModels
             CurrentQuestion = Questions[0];
             currentQuestionIndex = 0;
             score = 0;
-            buttonContent = currentQuestionIndex == Questions.Count - 1 ? "Finish Quiz" : "Next";
+            buttonContent = currentQuestionIndex == Questions.Count - 1 ? "Zakończ quiz" : "Następne pytanie";
             stopwatch = new Stopwatch();
             timer = new DispatcherTimer();
             timer.Interval = TimeSpan.FromSeconds(1);
@@ -147,7 +147,7 @@ namespace GeneratorQuizu.ViewModels
 
                 if(currentQuestionIndex == Questions.Count - 1)
                 {
-                    ButtonContent = "Finish Quiz";
+                    ButtonContent = "Zakończ quiz";
                 }
             }
             else
@@ -181,11 +181,11 @@ namespace GeneratorQuizu.ViewModels
             onPropertyChanged(nameof(Score));
             if (currentQuestionIndex != Questions.Count - 1)
             {
-                MessageBox.Show($"Curent score: {score}");
+                MessageBox.Show($"Aktualny wynik: {score}");
             }
             else
             {
-                MessageBox.Show($"Final score: {score}\nElapsed time: {QuizTime}");
+                MessageBox.Show($"Ostateczny wynik: {score}\nCzas rozwiązywania: {QuizTime}");
             }
             
         }
